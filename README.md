@@ -181,6 +181,19 @@ text and embedded-image extraction still work when it is disabled. The cost is
 worthwhile for the default document-reading use case, while custom deployments
 can omit it. Sizes vary with architecture and Debian security updates.
 
+### Browser automation
+
+The image includes the shared libraries required by Playwright's Chromium
+(including `libgbm1` and `libasound2t64`), so `npx playwright install chromium`
+as `agent` is enough to run headless browser tests. Browsers themselves are not
+preinstalled; Playwright downloads them into `~/.cache/ms-playwright`, which is
+lost when the container is recreated. Fonts, `xvfb` and headed mode are not
+covered; use `npx playwright install-deps` as root if you need the full set.
+`tests/browser.sh` installs `@playwright/test` and Chromium as `agent`, then
+tests a page served from a DinD container, including a screenshot and a PDF.
+Measured on 2026-10-28 like the table above, the default image grows from
+3,981 MB to 4,253 MB (+272 MB), mostly Mesa and LLVM pulled in by `libgbm1`.
+
 [GitHub Actions](.github/workflows/build-release.yml) runs real SSH and DinD integration tests for pull requests, pushes to `main` and version tags. It verifies Docker, Compose, Redis, networking, file transfer, mounts and separation of the host and inner container lists, including the standalone release configuration. Functional tests run on AMD64; ARM64 images are built using emulation.
 
 A successful push to `main` publishes `ghcr.io/sigmalko/agents-in-docker-with-dind:latest` and a `sha-...` image tag for `linux/amd64` and `linux/arm64`. A successful push of a tag in the form `vMAJOR.MINOR.PATCH` pointing to a commit on `main` publishes the matching image tag without `v` and creates a GitHub Release with only `docker-compose.yml` and `env.example`. The generated Compose file contains the pinned upstream configuration and uses the published image; the template selects the release's image version. The release description contains installation instructions.

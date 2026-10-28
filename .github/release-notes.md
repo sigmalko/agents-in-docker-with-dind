@@ -6,7 +6,9 @@ extraction including EMF/WMF. Use `doc-to-text`, `doc-extract-images` and
 `pdf-to-png` (each supports `--help`). Python document libraries, Mammoth and
 headless LibreOffice Writer are included. Custom builds can omit LibreOffice
 with `--build-arg INSTALL_LIBREOFFICE=false`; see the README for size measurements
-and conversion examples.
+and conversion examples. Shared libraries for Playwright's headless Chromium are
+also included (+272 MB); run `npx playwright install chromium` as `agent` to
+download the browser.
 The measured Linux/AMD64 image grows from 2.62 GB to 3.98 GB uncompressed
 (+1.36 GB); omitting LibreOffice reduces it to 3.61 GB. Sizes vary with updates.
 

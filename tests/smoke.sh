@@ -29,6 +29,8 @@ fi
 
 agent=$COMPOSE_PROJECT_NAME
 docker exec -i -u agent "$agent" bash < tests/documents.sh
+# Shared libraries that Playwright's downloaded Chromium links against.
+docker exec -u agent "$agent" sh -ec 'for lib in libasound.so.2 libatk-1.0.so.0 libatk-bridge-2.0.so.0 libatspi.so.0 libcairo.so.2 libcups.so.2 libdbus-1.so.3 libdrm.so.2 libgbm.so.1 libglib-2.0.so.0 libnspr4.so libnss3.so libpango-1.0.so.0 libX11.so.6 libxcb.so.1 libXcomposite.so.1 libXdamage.so.1 libXext.so.6 libXfixes.so.3 libxkbcommon.so.0 libXrandr.so.2; do /sbin/ldconfig -p | grep -Fq "$lib " || { echo "Missing Chromium library: $lib" >&2; exit 1; }; done'
 image_size=$(docker image inspect "$DIND_IMAGE" --format '{{.Size}}')
 printf 'Agent image size: %s bytes\n' "$image_size"
 if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
@@ -62,6 +64,7 @@ docker exec -u agent "$agent" sh -ec "printf 'FROM redis:7-alpine\\nCOPY probe /
 docker exec -u agent "$agent" docker build -t smoke-workspace /workspaces/smoke
 [ "$(docker exec -u agent "$agent" docker run --rm smoke-workspace cat /probe)" = copied-ok ]
 docker exec -u agent "$agent" node -e 'const s=require("net").connect(7778,"127.0.0.1",()=>s.write("*1\r\n$4\r\nPING\r\n"));s.on("data",b=>{if(b.toString().trim()!=="+PONG")process.exit(1);s.end()});s.on("error",()=>process.exit(1));setTimeout(()=>process.exit(1),5000).unref()'
+docker exec -i -u agent "$agent" bash < tests/browser.sh
 if docker inspect "$agent" --format '{{range .Mounts}}{{println .Destination}}{{end}}' | grep -Fxq /workspaces; then
     echo 'Workspace has an unexpected mount' >&2; exit 1
 fi
@@ -93,4 +96,4 @@ fi
 docker exec -u agent "$agent" test -f /workspaces/smoke/probe
 compose up -d --force-recreate
 docker exec -u agent "$agent" test ! -e /workspaces/smoke/probe
-printf '%s\n' 'Smoke test passed: documents, OCR, images, SSH, Docker, Compose, Redis, build, networking, labels, ephemeral storage and daemon separation.'
+printf '%s\n' 'Smoke test passed: documents, OCR, images, Playwright Chromium, SSH, Docker, Compose, Redis, build, networking, labels, ephemeral storage and daemon separation.'
