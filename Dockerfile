@@ -28,7 +28,7 @@ RUN apt-get update \
     && case "$INSTALL_LIBREOFFICE" in true|false) ;; *) exit 2 ;; esac \
     && apt-get install -y --no-install-recommends python3 vim nano ripgrep \
         poppler-utils pandoc tesseract-ocr tesseract-ocr-eng tesseract-ocr-pol \
-        unzip zip imagemagick inkscape fonts-dejavu-core jq file glow mdcat bat \
+        unzip zip imagemagick inkscape fonts-dejavu-core jq file glow bat \
         python3-pip python3-venv python3-fitz python3-pypdf python3-docx \
         python3-openpyxl python3-pil python3-lxml python3-bs4 \
         libasound2t64 libatk-bridge2.0-0t64 libatk1.0-0t64 libatspi2.0-0t64 \
