@@ -28,7 +28,7 @@ RUN apt-get update \
     && case "$INSTALL_LIBREOFFICE" in true|false) ;; *) exit 2 ;; esac \
     && apt-get install -y --no-install-recommends python3 vim nano ripgrep \
         poppler-utils pandoc tesseract-ocr tesseract-ocr-eng tesseract-ocr-pol \
-        unzip zip imagemagick inkscape fonts-dejavu-core jq file \
+        unzip zip imagemagick inkscape fonts-dejavu-core jq file glow mdcat bat \
         python3-pip python3-venv python3-fitz python3-pypdf python3-docx \
         python3-openpyxl python3-pil python3-lxml python3-bs4 \
         libasound2t64 libatk-bridge2.0-0t64 libatk1.0-0t64 libatspi2.0-0t64 \
@@ -36,6 +36,7 @@ RUN apt-get update \
         libnspr4 libnss3 libpango-1.0-0 libx11-6 libxcb1 libxcomposite1 \
         libxdamage1 libxext6 libxfixes3 libxkbcommon0 libxrandr2 \
         $(if [ "$INSTALL_LIBREOFFICE" = true ]; then echo libreoffice-writer-nogui libreoffice-core-nogui; fi) \
+    && ln -sf /usr/bin/batcat /usr/local/bin/bat \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements-docs.txt /opt/requirements-docs.txt
