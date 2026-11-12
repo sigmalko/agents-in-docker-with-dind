@@ -4,7 +4,7 @@ Run coding agents over SSH with their own Docker daemon. This project extends [a
 
 ## Architecture and security
 
-The agent image includes Python 3 (`python3`), Vim (`vim` and `vi`), Nano (`nano`), and ripgrep (`rg`) for editing and searching workspace files.
+The agent image includes Python 3 (`python3`), Vim (`vim` and `vi`), Nano (`nano`), and ripgrep (`rg`) for editing and searching workspace files, plus Glow (`glow`), mdcat (`mdcat`) and bat (`bat`) for rendering and printing Markdown files in the terminal.
 
 ```text
 Host Docker
