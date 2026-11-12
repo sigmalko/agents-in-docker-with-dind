@@ -9,7 +9,6 @@ pdftoppm -v
 pdftotext -v
 pandoc --version
 glow --version
-mdcat --version
 bat --version
 tesseract --list-langs | tee "$test_dir/languages"
 grep -Fx eng "$test_dir/languages"
